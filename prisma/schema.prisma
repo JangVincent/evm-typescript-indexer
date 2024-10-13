@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model blockchain {
+  id                     Int           @id @default(autoincrement())
+  chainId                String        @unique
+  sleepPerBlock          Int           @default(1000)
+  sleepWhenBlockNotFound Int           @default(1000)
+  startBlock             String?
+  endBlock               String?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @default(now()) @updatedAt
+  indexingLog            indexingLog?
+  target                 target?
+  transaction            transaction[]
+}
+
+model indexingLog {
+  id          Int        @id @default(autoincrement())
+  blockHash   String
+  blockNumber Int
+  chainId     String     @unique
+  chain       blockchain @relation(fields: [chainId], references: [chainId])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+}
+
+model target {
+  id              Int        @id @default(autoincrement())
+  address         String
+  methodSignature String
+  chainId         String     @unique
+  chain           blockchain @relation(fields: [chainId], references: [chainId])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @default(now()) @updatedAt
+
+  @@unique([address, methodSignature])
+}
+
+model transaction {
+  id          Int        @id @default(autoincrement())
+  chainId     String
+  chain       blockchain @relation(fields: [chainId], references: [chainId])
+  hash        String
+  blockHash   String
+  blockNumber String
+  from        String
+  to          String
+  value       String
+  input       String
+  timestamp   String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+
+  @@unique([chainId, hash], name: "chainId_hash_unique")
+}

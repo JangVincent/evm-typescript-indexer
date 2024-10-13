@@ -1,0 +1,21 @@
+{
+  "license": "MIT",
+  "devDependencies": {
+    "@prisma/client": "^5.20.0",
+    "@types/node": "^20.14.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "dayjs": "^1.11.13",
+    "prisma": "^5.20.0",
+    "viem": "^2.21.17"
+  },
+  "scripts": {
+    "start": "node dist/main.js",
+    "build": "tsc",
+    "db-gen": "prisma generate",
+    "db-push": "prisma db push"
+  }
+}
